@@ -99,8 +99,11 @@ public final class LoggerFactory {
     static volatile SLF4JServiceProvider PROVIDER;
 
     private static List<SLF4JServiceProvider> findServiceProviders() {
+        //这个classloader对象 里面只放着 classLoader对象 SLF4JServiceProvider的class对象 和一个初始化好的懒迭代器
+        // 也就是实际上什么都没做，懒迭代器里面也放着classloader和class  也就是初始化出来啥也没干
         ServiceLoader<SLF4JServiceProvider> serviceLoader = ServiceLoader.load(SLF4JServiceProvider.class);
         List<SLF4JServiceProvider> providerList = new ArrayList<>();
+        //能用foreach 一定是实现了迭代器
         for (SLF4JServiceProvider provider : serviceLoader) {
             providerList.add(provider);
         }
@@ -414,6 +417,7 @@ public final class LoggerFactory {
      * @since 1.8.0
      */
     static SLF4JServiceProvider getProvider() {
+        // 双重加锁，初始化一个provider
         if (INITIALIZATION_STATE == UNINITIALIZED) {
             synchronized (LoggerFactory.class) {
                 if (INITIALIZATION_STATE == UNINITIALIZED) {
@@ -435,5 +439,9 @@ public final class LoggerFactory {
             return SUBST_PROVIDER;
         }
         throw new IllegalStateException("Unreachable code");
+    }
+
+    public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(LoggerFactory.class);
     }
 }

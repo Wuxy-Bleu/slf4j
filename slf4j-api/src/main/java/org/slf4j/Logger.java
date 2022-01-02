@@ -81,6 +81,7 @@ import org.slf4j.spi.NOPLoggingEventBuilder;
  * @author Ceki G&uuml;lc&uuml;
  */
 public interface Logger {
+    //fsdfs
 
     /**
      * Case insensitive String constant used to retrieve the name of the root logger.
